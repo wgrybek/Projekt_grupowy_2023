@@ -66,6 +66,8 @@ ax = fig.gca()
 df.hist(ax = ax)
 plt.show()
 
+
+
 # # Zmienne kategoryczne
 
 Counter(df['time_signature'])
@@ -78,6 +80,23 @@ Counter(df['time_signature'])
 Counter(df['audio_mode'])
 
 Counter(df['key'])
+
+labels, counts = np.unique(df['audio_mode'],return_counts=True)
+ticks = range(len(counts))
+plt.bar(ticks,counts, align='center', )
+plt.xticks(ticks, labels)
+
+labels, counts = np.unique(df['key'],return_counts=True)
+ticks = range(len(counts))
+plt.bar(ticks,counts, align='center')
+plt.xticks(ticks, labels)
+
+labels, counts = np.unique(df['time_signature'],return_counts=True)
+ticks = range(len(counts))
+plt.bar(ticks,counts, align='center')
+plt.xticks(ticks, labels)
+
+# # Korelacje
 
 # +
 X = df.drop(labels=['song_popularity', 'song_name'], axis=1)
