@@ -103,15 +103,66 @@ plt.xticks(rotation=90)
 plt.show()
 # -
 
-# # Normalizacja
+# # Zależności między zmienną objaśnianą a zmiennymi objaśniającymi
+
+# +
+#numeric
+fig, axes = plt.subplots(5, 2, figsize = (15,20))
+plt.subplots_adjust(hspace=0.5)
+num.plot.scatter(x = "song_popularity",
+                 y = "song_duration_ms",
+                 ax = axes[0,0])
+num.plot.scatter(x = "song_popularity",
+                 y = "acousticness",
+                 ax = axes[0,1])
+num.plot.scatter(x = "song_popularity",
+                 y = "danceability",
+                 ax = axes[1,0])
+num.plot.scatter(x = "song_popularity",
+                 y = "energy",
+                 ax = axes[1,1])
+num.plot.scatter(x = "song_popularity",
+                 y = "instrumentalness",
+                 ax = axes[2,0])
+num.plot.scatter(x = "song_popularity",
+                 y = "liveness",
+                 ax = axes[2,1])
+num.plot.scatter(x = "song_popularity",
+                 y = "loudness",
+                 ax = axes[3,0])
+num.plot.scatter(x = "song_popularity",
+                 y = "speechiness",
+                 ax = axes[3,1])
+num.plot.scatter(x = "song_popularity",
+                 y = "tempo",
+                 ax = axes[4,0])
+num.plot.scatter(x = "song_popularity",
+                 y = "audio_valence",
+                 ax = axes[4,1])
+
+plt.show()
+
+# -
+
+#categorical
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (15,5))
+sns.boxplot(x="key", y="song_popularity", data=df, palette="Set3", ax = ax1)
+sns.boxplot(x="audio_mode", y="song_popularity", data=df, palette="Set3", ax = ax2)
+sns.boxplot(x="time_signature", y="song_popularity", data=df, palette="Set3", ax = ax3)
+plt.show()
+
+
+# # Normalizacja (numeric)
 
 scaler = StandardScaler()
 X = num.drop(["song_popularity"], axis = 1)
 X.iloc[:,0:]=scaler.fit_transform(X.iloc[:,0:].to_numpy())
 
+# # Pary wykresy (numeric)
+
 sns.pairplot(X)
 
-# # PCA (dla numerycznych)
+# # PCA (numeric)
 
 pca = PCA(n_components=10)
 principalComponents = pca.fit_transform(X)
