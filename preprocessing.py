@@ -59,14 +59,24 @@ if len(Counter({k: c for k, c in counter.items() if c > 1})) != 0:
 
 df.describe().transpose()
 
+cat = df[["key","audio_mode", "time_signature"]].copy()
+num = df.drop(["song_name","key","audio_mode", "time_signature"], axis = 1)
+Y = df["song_popularity"]
+
 # # Wizualizacja
 
+#Numerical variables
 fig = plt.figure(figsize = (15,15))
 ax = fig.gca()
-df.hist(ax = ax)
+num.hist(ax = ax)
 plt.show()
 
-
+# Categorical values
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (15,5))
+cat["key"].value_counts().plot(kind='bar', ax = ax1)
+cat["time_signature"].value_counts().plot(kind='bar', ax = ax2)
+cat["audio_mode"].value_counts().plot(kind='bar', ax = ax3)
+plt.show()
 
 # # Zmienne kategoryczne
 
@@ -81,26 +91,10 @@ Counter(df['audio_mode'])
 
 Counter(df['key'])
 
-labels, counts = np.unique(df['audio_mode'],return_counts=True)
-ticks = range(len(counts))
-plt.bar(ticks,counts, align='center', )
-plt.xticks(ticks, labels)
-
-labels, counts = np.unique(df['key'],return_counts=True)
-ticks = range(len(counts))
-plt.bar(ticks,counts, align='center')
-plt.xticks(ticks, labels)
-
-labels, counts = np.unique(df['time_signature'],return_counts=True)
-ticks = range(len(counts))
-plt.bar(ticks,counts, align='center')
-plt.xticks(ticks, labels)
-
 # # Korelacje
 
 # +
-X = df.drop(labels=['song_popularity', 'song_name'], axis=1)
-correlation_matrix=X.corr()
+correlation_matrix=num.corr()
 
 plt.figure(figsize=(12,10))
 ax = sns.heatmap(correlation_matrix, annot=True, cmap='RdBu_r')
@@ -112,13 +106,14 @@ plt.show()
 # # Normalizacja
 
 scaler = StandardScaler()
+X = num.drop(["song_popularity"], axis = 1)
 X.iloc[:,0:]=scaler.fit_transform(X.iloc[:,0:].to_numpy())
 
 sns.pairplot(X)
 
-# # PCA
+# # PCA (dla numerycznych)
 
-pca = PCA(n_components=13)
+pca = PCA(n_components=10)
 principalComponents = pca.fit_transform(X)
 print('Procent warincji wyjaśniony przez components: {}'.format(pca.explained_variance_ratio_))
 print('Procent warincji wyjaśniony przez components (suma): {}'.format(pca.explained_variance_ratio_.cumsum()))
